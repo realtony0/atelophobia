@@ -63,6 +63,10 @@ function getSafeExtension(fileName: string) {
   return /\.(avif|gif|jpe?g|png|svg|webp)$/i.test(extension) ? extension : '.jpg';
 }
 
+function buildProductImageRoute(pathname: string) {
+  return `/api/product-images?path=${encodeURIComponent(pathname)}`;
+}
+
 async function resolveProductImage({
   productId,
   imageInput,
@@ -100,13 +104,13 @@ async function resolveProductImage({
 
     const pathname = `products/${productId}-${Date.now()}${getSafeExtension(imageFile.name)}`;
     const uploaded = await put(pathname, imageFile, {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: false,
       allowOverwrite: true,
       contentType: imageFile.type || undefined
     });
 
-    image = uploaded.url;
+    image = buildProductImageRoute(uploaded.pathname);
     width = dimensions.width;
     height = dimensions.height;
   }

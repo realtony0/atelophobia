@@ -1,7 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { COUNTRIES, DEFAULT_COUNTRY } from '@/lib/countries';
 import {
@@ -55,6 +56,7 @@ function buildRows(products: ProductRecord[]): Row[] {
 }
 
 export function AtelophobiaHome({ products }: StorefrontProps) {
+  const router = useRouter();
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [activeProductId, setActiveProductId] = useState<string | null>(null);
   const [addedStates, setAddedStates] = useState<Record<string, boolean>>({});
@@ -69,6 +71,8 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [orderConfirmation, setOrderConfirmation] = useState<OrderConfirmation | null>(null);
+  const hiddenAdminTapCount = useRef(0);
+  const hiddenAdminTapTimer = useRef<number | null>(null);
 
   const rows = useMemo(() => buildRows(products), [products]);
   const selectedCountry = COUNTRIES.find((country) => country.code === checkoutForm.countryCode) || DEFAULT_COUNTRY;
@@ -143,6 +147,14 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (hiddenAdminTapTimer.current) {
+        window.clearTimeout(hiddenAdminTapTimer.current);
+      }
+    };
+  }, []);
+
   const handleActivate = useCallback((id: string) => {
     setActiveProductId(id);
   }, []);
@@ -211,6 +223,27 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
     setOrderConfirmation(null);
   }, []);
 
+  const handleLogoClick = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    hiddenAdminTapCount.current += 1;
+
+    if (hiddenAdminTapTimer.current) {
+      window.clearTimeout(hiddenAdminTapTimer.current);
+    }
+
+    if (hiddenAdminTapCount.current >= 9) {
+      hiddenAdminTapCount.current = 0;
+      router.push('/admin/login');
+      return;
+    }
+
+    hiddenAdminTapTimer.current = window.setTimeout(() => {
+      hiddenAdminTapCount.current = 0;
+      hiddenAdminTapTimer.current = null;
+    }, 1800);
+  }, [router]);
+
   const submitOrder = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -272,7 +305,7 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
   return (
     <>
       <header>
-        <button type="button" className="logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <button type="button" className="logo" onClick={handleLogoClick}>
           ATELOPHOBIA
         </button>
 
