@@ -10,6 +10,7 @@ import {
   updateAdminCode
 } from '@/app/admin/actions';
 import { requireAdminAuth } from '@/lib/admin-auth';
+import { getDisplayImageSrc } from '@/lib/product-images';
 import { SIZES, type ProductSize } from '@/lib/products';
 import { getOrders, getProducts, getSiteSettings } from '@/lib/store';
 
@@ -337,7 +338,7 @@ export default async function AdminPage({
                     <summary className="flex cursor-pointer list-none items-center gap-4 p-4 sm:p-5">
                       <div className="overflow-hidden rounded-[20px] border border-white/10 bg-white/[0.04]">
                         <Image
-                          src={product.image}
+                          src={getDisplayImageSrc(product.image)}
                           alt={product.name}
                           width={88}
                           height={110}
@@ -370,7 +371,7 @@ export default async function AdminPage({
                           <div className="space-y-3">
                             <div className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04]">
                               <Image
-                                src={product.image}
+                                src={getDisplayImageSrc(product.image)}
                                 alt={product.name}
                                 width={product.width}
                                 height={product.height}
