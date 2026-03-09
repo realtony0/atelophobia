@@ -23,6 +23,7 @@ export const ProductCard = memo(function ProductCard({
 }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState<ProductSize | null>(null);
   const isReady = Boolean(selectedSize);
+  const isRemoteImage = /^https?:\/\//i.test(product.image);
 
   const selectSize = (size: ProductSize) => {
     setSelectedSize(size);
@@ -57,6 +58,7 @@ export const ProductCard = memo(function ProductCard({
         height={product.height}
         sizes={product.layout === 'solo' ? '(max-width: 600px) 100vw, 62vw' : '(max-width: 600px) 100vw, 50vw'}
         priority={product.position === 1}
+        unoptimized={isRemoteImage}
         className="product-image"
       />
 
@@ -102,7 +104,7 @@ export const ProductCard = memo(function ProductCard({
             addToBag();
           }}
         >
-          {added ? '✓ Added' : isReady ? 'Add to bag' : 'Select a size'}
+          {added ? 'Added' : isReady ? 'Add to bag' : 'Select a size'}
         </button>
       </div>
     </div>

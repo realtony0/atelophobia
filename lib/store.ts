@@ -15,10 +15,22 @@ import {
 const dataDir = path.join(process.cwd(), 'data');
 const productsFile = path.join(dataDir, 'products.json');
 const ordersFile = path.join(dataDir, 'orders.json');
+const settingsFile = path.join(dataDir, 'settings.json');
 
 const PRODUCTS_BLOB_PATH = 'store/products.json';
 const ORDERS_BLOB_PREFIX = 'store/orders/';
+const SETTINGS_BLOB_PATH = 'store/settings.json';
 const BLOB_CACHE_SECONDS = 60;
+
+export type SiteSettings = {
+  adminCode: string | null;
+  updatedAt: string | null;
+};
+
+export const DEFAULT_SITE_SETTINGS: SiteSettings = {
+  adminCode: null,
+  updatedAt: null
+};
 
 type CreateOrderInput = {
   customer: CustomerRecord;
@@ -170,9 +182,7 @@ async function saveOrdersToBlob(orders: OrderRecord[]) {
     .map((blob) => blob.pathname)
     .filter((pathname) => !nextPathnames.has(pathname));
 
-  await Promise.all(
-    sortedOrders.map((order) => writeBlobJson(orderBlobPath(order.id), order))
-  );
+  await Promise.all(sortedOrders.map((order) => writeBlobJson(orderBlobPath(order.id), order)));
 
   if (stalePathnames.length > 0) {
     await del(stalePathnames);
@@ -197,6 +207,23 @@ async function updateOrderStatusInBlob(orderId: string, status: OrderStatus) {
   }
 
   await writeBlobJson(pathname, { ...order, status });
+}
+
+async function getSettingsFromBlob() {
+  const existing = await readBlobJson<SiteSettings>(SETTINGS_BLOB_PATH);
+
+  if (existing) {
+    return { ...DEFAULT_SITE_SETTINGS, ...existing };
+  }
+
+  const localSettings = await readJsonIfExists<SiteSettings>(settingsFile, DEFAULT_SITE_SETTINGS);
+  const normalized = { ...DEFAULT_SITE_SETTINGS, ...localSettings };
+  await writeBlobJson(SETTINGS_BLOB_PATH, normalized);
+  return normalized;
+}
+
+async function saveSettingsToBlob(settings: SiteSettings) {
+  await writeBlobJson(SETTINGS_BLOB_PATH, { ...DEFAULT_SITE_SETTINGS, ...settings });
 }
 
 export async function getProducts() {
@@ -238,6 +265,26 @@ export async function saveOrders(orders: OrderRecord[]) {
   }
 
   await writeJson(ordersFile, sortOrders(orders));
+}
+
+export async function getSiteSettings() {
+  if (usesBlobStorage()) {
+    return getSettingsFromBlob();
+  }
+
+  const settings = await readJson<SiteSettings>(settingsFile, DEFAULT_SITE_SETTINGS);
+  return { ...DEFAULT_SITE_SETTINGS, ...settings };
+}
+
+export async function saveSiteSettings(settings: SiteSettings) {
+  const normalized = { ...DEFAULT_SITE_SETTINGS, ...settings };
+
+  if (usesBlobStorage()) {
+    await saveSettingsToBlob(normalized);
+    return;
+  }
+
+  await writeJson(settingsFile, normalized);
 }
 
 export async function createOrder(input: CreateOrderInput) {

@@ -3,6 +3,8 @@ import { timingSafeEqual } from 'crypto';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { getSiteSettings } from '@/lib/store';
+
 const ADMIN_COOKIE = 'atelophobia_admin_session';
 const SESSION_VALUE = 'authenticated';
 
@@ -34,7 +36,8 @@ export function createAdminSession() {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
-    path: '/'
+    path: '/',
+    maxAge: 60 * 60 * 12
   });
 }
 
@@ -42,6 +45,15 @@ export function clearAdminSession() {
   cookies().delete(ADMIN_COOKIE);
 }
 
-export function validateAdminCode(code: string) {
-  return safeCompare(code.trim(), DEFAULT_ADMIN_CODE);
+export async function validateAdminCode(code: string) {
+  const normalizedCode = code.trim();
+
+  if (!normalizedCode) {
+    return false;
+  }
+
+  const settings = await getSiteSettings();
+  const expectedCode = settings.adminCode?.trim() || DEFAULT_ADMIN_CODE;
+
+  return safeCompare(normalizedCode, expectedCode);
 }
