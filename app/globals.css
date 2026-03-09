@@ -169,6 +169,8 @@ header {
 }
 
 .item[data-product-id='phobias-jeans-black'] {
+  --product-image-scale: 0.925;
+  --product-image-scale-hover: 0.975;
   --product-image-offset-y: 1.05%;
 }
 
