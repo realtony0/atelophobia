@@ -41,6 +41,7 @@ export const ProductCard = memo(function ProductCard({
     <div
       className={clsx('item group', touched && 'touched')}
       data-product-card
+      data-product-id={product.id}
       onClick={(event) => {
         const target = event.target as HTMLElement;
 
