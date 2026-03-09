@@ -163,7 +163,6 @@ header {
   object-fit: cover;
   object-position: center;
   display: block;
-  transform: scale(var(--image-scale, 1));
   transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
   filter: brightness(0.72) contrast(1.05) saturate(0.9);
 }
@@ -184,7 +183,7 @@ header {
 
 .item:hover .product-image,
 .item.touched .product-image {
-  transform: scale(calc(var(--image-scale, 1) + 0.05));
+  transform: scale(1.05);
   filter: brightness(0.38) contrast(1.1) saturate(0.7);
 }
 
