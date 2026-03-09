@@ -1,23 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="accent" x1="18%" y1="14%" x2="82%" y2="86%">
-      <stop offset="0%" stop-color="#f7f1ff" />
-      <stop offset="100%" stop-color="#d8c0ff" />
-    </linearGradient>
-    <linearGradient id="mauve" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#d08cff" />
-      <stop offset="100%" stop-color="#8e46d8" />
-    </linearGradient>
-  </defs>
-
-  <rect width="64" height="64" rx="15" fill="#05000a" />
-  <rect x="2" y="2" width="60" height="60" rx="13" fill="none" stroke="#1e0b2a" stroke-width="1.5" />
-  <circle cx="32" cy="20" r="17" fill="#4d1972" opacity="0.16" />
+  <rect width="64" height="64" rx="16" fill="#050505" />
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="#f5f5f5" stroke-opacity="0.08" stroke-width="1.5" />
 
   <path
-    d="M16 50 28.8 14h6.4L48 50h-7.3l-2.4-7.6H25.7L23.3 50Zm11.7-13.5h8.6L32 22.5Z"
-    fill="url(#accent)"
+    d="M18 13h20.5L50 24.5V46c0 2.2-1.8 4-4 4H18c-2.2 0-4-1.8-4-4V18c0-2.2 1.8-4 4-4Z"
+    fill="#f5f5f5"
   />
 
-  <rect x="30.8" y="19" width="2.5" height="24" rx="1.25" fill="url(#mauve)" />
+  <path
+    d="M19 17h18.3L46 25.7V45c0 1.1-.9 2-2 2H19c-1.1 0-2-.9-2-2V19c0-1.1.9-2 2-2Z"
+    fill="none"
+    stroke="#050505"
+    stroke-opacity="0.16"
+    stroke-width="1.6"
+    stroke-linejoin="round"
+    stroke-dasharray="2.2 2.2"
+  />
+
+  <circle cx="42.5" cy="21.5" r="2.2" fill="#050505" />
+
+  <path
+    d="M24 43 31.4 22h2.6L41 43h-4.5l-1.2-3.9h-5.7L28.4 43Zm6.5-7.2h3.9L32.5 30Z"
+    fill="#050505"
+  />
+
+  <path d="M23 46.5h18" stroke="#050505" stroke-opacity="0.18" stroke-width="2.4" stroke-linecap="round" />
 </svg>
