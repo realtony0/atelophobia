@@ -167,6 +167,11 @@ header {
   --product-image-scale-hover: 0.99;
 }
 
+.item[data-product-id='phobias-jeans'] {
+  --product-image-scale: 0.89;
+  --product-image-scale-hover: 0.94;
+}
+
 .product-image {
   width: 100%;
   height: 100%;
@@ -182,6 +187,10 @@ header {
 .item[data-product-id='phobias-jeans-black'] .product-image {
   object-fit: contain;
   padding: 4% 6% 0;
+}
+
+.item[data-product-id='phobias-jeans'] .product-image {
+  padding: 6% 8% 0;
 }
 
 .item::after {
