@@ -7,6 +7,7 @@ export type ProductRecord = {
   name: string;
   price: number;
   image: string;
+  imageScale?: number;
   width: number;
   height: number;
   layout: ProductLayout;
@@ -52,6 +53,7 @@ export const PRODUCT_SEED: ProductRecord[] = [
     name: 'Da Pinkao Sleeve',
     price: 17,
     image: '/products/product-1.jpeg',
+    imageScale: 1,
     width: 880,
     height: 1168,
     layout: 'duo',
@@ -59,26 +61,16 @@ export const PRODUCT_SEED: ProductRecord[] = [
     position: 1
   },
   {
-    id: 'mekao-pull-b',
-    name: 'Da Mekao Pull B',
-    price: 21,
-    image: '/products/product-2.jpeg',
-    width: 1024,
-    height: 1024,
+    id: 'blackies-sleeve',
+    name: "D Blackie's Sleeve",
+    price: 17,
+    image: '/products/product-5.jpeg',
+    imageScale: 0.95,
+    width: 875,
+    height: 1313,
     layout: 'duo',
     active: true,
-    position: 3
-  },
-  {
-    id: 'mekao-pull-a',
-    name: 'Da Mekao Pull A',
-    price: 21,
-    image: '/products/product-4.jpeg',
-    width: 928,
-    height: 1120,
-    layout: 'duo',
-    active: true,
-    position: 4
+    position: 2
   },
   {
     id: 'phobias-jeans',
@@ -89,18 +81,7 @@ export const PRODUCT_SEED: ProductRecord[] = [
     height: 1313,
     layout: 'duo',
     active: true,
-    position: 5
-  },
-  {
-    id: 'blackies-sleeve',
-    name: "D Blackie's Sleeve",
-    price: 17,
-    image: '/products/product-5.jpeg',
-    width: 875,
-    height: 1313,
-    layout: 'duo',
-    active: true,
-    position: 2
+    position: 3
   },
   {
     id: 'phobias-jeans-black',
@@ -109,6 +90,28 @@ export const PRODUCT_SEED: ProductRecord[] = [
     image: '/products/product-6.jpeg',
     width: 875,
     height: 1313,
+    layout: 'duo',
+    active: true,
+    position: 4
+  },
+  {
+    id: 'mekao-pull-b',
+    name: 'Da Mekao Pull B',
+    price: 21,
+    image: '/products/product-2.jpeg',
+    width: 1024,
+    height: 1024,
+    layout: 'duo',
+    active: true,
+    position: 5
+  },
+  {
+    id: 'mekao-pull-a',
+    name: 'Da Mekao Pull A',
+    price: 21,
+    image: '/products/product-4.jpeg',
+    width: 928,
+    height: 1120,
     layout: 'duo',
     active: true,
     position: 6

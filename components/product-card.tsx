@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import Image from 'next/image';
-import { memo, useState } from 'react';
+import { memo, type CSSProperties, useMemo, useState } from 'react';
 
 import { SIZES, type ProductRecord, type ProductSize } from '@/lib/products';
 
@@ -23,6 +23,13 @@ export const ProductCard = memo(function ProductCard({
 }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState<ProductSize | null>(null);
   const isReady = Boolean(selectedSize);
+  const imageStyle = useMemo(
+    () =>
+      ({
+        '--image-scale': product.imageScale ?? 1
+      }) as CSSProperties,
+    [product.imageScale]
+  );
 
   const selectSize = (size: ProductSize) => {
     setSelectedSize(size);
@@ -40,6 +47,7 @@ export const ProductCard = memo(function ProductCard({
     <div
       className={clsx('item group', touched && 'touched')}
       data-product-card
+      style={imageStyle}
       onClick={(event) => {
         const target = event.target as HTMLElement;
 
@@ -60,9 +68,11 @@ export const ProductCard = memo(function ProductCard({
         className="product-image"
       />
 
+      <div className="price-badge">${product.price}</div>
+
       <div className="overlay">
         <div className="ov-name">{product.name}</div>
-        <div className="ov-price">{product.price}</div>
+        <div className="ov-price">${product.price}</div>
 
         <div className="ov-sizes">
           {SIZES.map((size) => (
