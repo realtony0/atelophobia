@@ -15,22 +15,22 @@ export default function AdminLoginPage({
   return (
     <main className="min-h-screen bg-black px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8">
       <div className="mx-auto max-w-md">
-        <section className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-          <div className="space-y-2">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Atelophobia</p>
+        <section className="rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_58%)] bg-black p-6 shadow-[0_24px_120px_rgba(255,255,255,0.06)] sm:p-8">
+          <div className="space-y-3">
+            <p className="text-[10px] uppercase tracking-[0.32em] text-white/35">Atelophobia</p>
             <h1 className="font-display text-3xl uppercase tracking-[0.08em] sm:text-4xl">Admin</h1>
-            <p className="text-sm text-white/50">Acces protege par un code unique.</p>
           </div>
 
           <form action={loginAdmin} className="mt-8 space-y-5">
             <label className="space-y-2">
-              <span className="text-[11px] uppercase tracking-[0.28em] text-white/45">Code admin</span>
+              <span className="text-[11px] uppercase tracking-[0.28em] text-white/45">Code</span>
               <input
                 type="password"
                 name="code"
                 inputMode="numeric"
-                placeholder="1508"
-                className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                autoComplete="current-password"
+                required
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition focus:border-white/30 focus:bg-white/[0.05]"
               />
             </label>
 

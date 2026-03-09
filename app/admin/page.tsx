@@ -57,6 +57,28 @@ function getErrorMessage(searchParams?: Record<string, string | string[] | undef
   }
 }
 
+function SectionHeader({
+  id,
+  eyebrow,
+  title,
+  note
+}: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  note?: string;
+}) {
+  return (
+    <div id={id} className="scroll-mt-28 space-y-2">
+      <p className="text-[10px] uppercase tracking-[0.3em] text-white/35">{eyebrow}</p>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <h2 className="font-display text-2xl uppercase tracking-[0.08em] sm:text-3xl">{title}</h2>
+        {note ? <p className="text-xs text-white/45">{note}</p> : null}
+      </div>
+    </div>
+  );
+}
+
 export default async function AdminPage({
   searchParams
 }: {
@@ -79,19 +101,34 @@ export default async function AdminPage({
   return (
     <main className="min-h-screen bg-black px-4 py-6 text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        <header className="rounded-[32px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+        <header className="rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_60%)] bg-black p-5 shadow-[0_30px_120px_rgba(255,255,255,0.05)] sm:p-6">
+          <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
             <div className="space-y-4">
-              <p className="text-[11px] uppercase tracking-[0.38em] text-white/45">Atelophobia Admin</p>
               <div className="space-y-2">
-                <h1 className="font-display text-4xl uppercase tracking-[0.08em] sm:text-5xl">Back Office</h1>
-                <p className="max-w-2xl text-sm text-white/55">
-                  Gestion boutique, media et commandes sur une interface noire et blanche, propre sur mobile comme sur desktop.
-                </p>
+                <p className="text-[10px] uppercase tracking-[0.32em] text-white/35">Atelophobia</p>
+                <h1 className="font-display text-4xl uppercase tracking-[0.08em] sm:text-5xl">Admin</h1>
               </div>
+
+              <nav className="flex flex-wrap gap-2">
+                <a href="#overview" className="rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-white/75 transition hover:border-white/35 hover:bg-white/[0.04]">
+                  Vue globale
+                </a>
+                <a href="#create-product" className="rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-white/75 transition hover:border-white/35 hover:bg-white/[0.04]">
+                  Ajouter
+                </a>
+                <a href="#manage-products" className="rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-white/75 transition hover:border-white/35 hover:bg-white/[0.04]">
+                  Produits
+                </a>
+                <a href="#security" className="rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-white/75 transition hover:border-white/35 hover:bg-white/[0.04]">
+                  Securite
+                </a>
+                <a href="#orders" className="rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-white/75 transition hover:border-white/35 hover:bg-white/[0.04]">
+                  Commandes
+                </a>
+              </nav>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 xl:justify-end">
               <form action={purgeCancelledOrders}>
                 <button
                   type="submit"
@@ -110,29 +147,6 @@ export default async function AdminPage({
               </form>
             </div>
           </div>
-
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Produits</p>
-              <p className="mt-3 text-3xl font-semibold">{products.length}</p>
-              <p className="mt-2 text-xs uppercase tracking-[0.22em] text-white/45">{activeProducts} actifs</p>
-            </div>
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Masques</p>
-              <p className="mt-3 text-3xl font-semibold">{hiddenProducts}</p>
-              <p className="mt-2 text-xs uppercase tracking-[0.22em] text-white/45">produits caches</p>
-            </div>
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Commandes</p>
-              <p className="mt-3 text-3xl font-semibold">{orders.length}</p>
-              <p className="mt-2 text-xs uppercase tracking-[0.22em] text-white/45">{pendingOrders} en attente</p>
-            </div>
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Volume</p>
-              <p className="mt-3 text-3xl font-semibold">${totalRevenue}</p>
-              <p className="mt-2 text-xs uppercase tracking-[0.22em] text-white/45">total encaisse</p>
-            </div>
-          </div>
         </header>
 
         {successMessage ? (
@@ -147,16 +161,38 @@ export default async function AdminPage({
           </div>
         ) : null}
 
-        <section className="grid gap-6 2xl:grid-cols-[1.1fr_0.9fr]">
+        <section id="overview" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 scroll-mt-28">
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Produits</p>
+            <p className="mt-4 text-4xl font-semibold text-white">{products.length}</p>
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/45">{activeProducts} actifs</p>
+          </div>
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Masques</p>
+            <p className="mt-4 text-4xl font-semibold text-white">{hiddenProducts}</p>
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/45">produits caches</p>
+          </div>
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Commandes</p>
+            <p className="mt-4 text-4xl font-semibold text-white">{orders.length}</p>
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/45">{pendingOrders} en attente</p>
+          </div>
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Volume</p>
+            <p className="mt-4 text-4xl font-semibold text-white">${totalRevenue}</p>
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/45">chiffre total</p>
+          </div>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
           <div className="space-y-6">
             <section className="rounded-[32px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Catalogue</p>
-                  <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.08em]">Ajouter un produit</h2>
-                </div>
-                <p className="text-xs text-white/45">Upload depuis la galerie ou URL manuelle avec dimensions.</p>
-              </div>
+              <SectionHeader
+                id="create-product"
+                eyebrow="Catalogue"
+                title="Ajouter un produit"
+                note="Formulaire separe, image en upload ou URL."
+              />
 
               <form action={createProduct} encType="multipart/form-data" className="mt-6 space-y-5">
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -164,7 +200,6 @@ export default async function AdminPage({
                     <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Code produit</span>
                     <input
                       name="productCode"
-                      placeholder="ex: pink-hoodie"
                       className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                     />
                   </label>
@@ -172,7 +207,6 @@ export default async function AdminPage({
                     <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Nom</span>
                     <input
                       name="name"
-                      placeholder="Nom produit"
                       className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                     />
                   </label>
@@ -215,7 +249,6 @@ export default async function AdminPage({
                       type="number"
                       min="1"
                       step="1"
-                      placeholder="auto si upload"
                       className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                     />
                   </label>
@@ -226,7 +259,6 @@ export default async function AdminPage({
                       type="number"
                       min="1"
                       step="1"
-                      placeholder="auto si upload"
                       className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                     />
                   </label>
@@ -234,7 +266,6 @@ export default async function AdminPage({
                     <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">URL image</span>
                     <input
                       name="image"
-                      placeholder="/products/mon-produit.jpg ou https://..."
                       className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                     />
                   </label>
@@ -254,9 +285,7 @@ export default async function AdminPage({
                 </div>
 
                 <div className="flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="max-w-2xl text-xs text-white/45">
-                    Si un fichier est selectionne, il remplace l&apos;URL et les dimensions sont detectees automatiquement.
-                  </p>
+                  <p className="max-w-2xl text-xs text-white/45">Le fichier remplace automatiquement le lien image.</p>
                   <button
                     type="submit"
                     className="rounded-full bg-white px-5 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-black transition hover:bg-zinc-200"
@@ -268,142 +297,174 @@ export default async function AdminPage({
             </section>
 
             <section className="rounded-[32px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Catalogue</p>
-                  <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.08em]">Modifier les produits</h2>
-                </div>
-                <p className="text-xs text-white/45">Chaque fiche permet de remplacer l&apos;image, le prix et l&apos;ordre d&apos;affichage.</p>
-              </div>
+              <SectionHeader
+                id="manage-products"
+                eyebrow="Catalogue"
+                title="Produits"
+                note="Chaque produit ouvre son propre panneau avec un bouton de sauvegarde."
+              />
 
-              <div className="mt-6 space-y-5">
+              <div className="mt-6 space-y-4">
                 {products.map((product) => (
-                  <form
-                    key={product.id}
-                    action={saveProductSettings}
-                    encType="multipart/form-data"
-                    className="rounded-[28px] border border-white/10 bg-black/70 p-4 sm:p-5"
-                  >
-                    <input type="hidden" name="productId" value={product.id} />
+                  <details key={product.id} className="group rounded-[28px] border border-white/10 bg-black/70 open:bg-white/[0.03]">
+                    <summary className="flex cursor-pointer list-none items-center gap-4 p-4 sm:p-5">
+                      <div className="overflow-hidden rounded-[20px] border border-white/10 bg-white/[0.04]">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          width={88}
+                          height={110}
+                          sizes="88px"
+                          className="h-[88px] w-[70px] object-cover sm:h-[104px] sm:w-[82px]"
+                        />
+                      </div>
 
-                    <div className="grid gap-5 xl:grid-cols-[180px_1fr]">
-                      <div className="space-y-3">
-                        <div className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04]">
-                          <Image src={product.image} alt={product.name} width={product.width} height={product.height} sizes="180px" className="aspect-[4/5] h-full w-full object-cover" />
-                        </div>
-                        <div className="rounded-[20px] border border-white/10 bg-white/[0.03] p-3 text-xs text-white/55">
-                          <p className="uppercase tracking-[0.22em] text-white/35">Code</p>
-                          <p className="mt-2 break-all font-medium text-white/80">{product.id}</p>
-                          <p className="mt-4 uppercase tracking-[0.22em] text-white/35">Dimensions</p>
-                          <p className="mt-2 text-white/80">
-                            {product.width} x {product.height}
-                          </p>
+                      <div className="min-w-0 flex-1 space-y-2">
+                        <p className="truncate font-display text-lg uppercase tracking-[0.08em] text-white">{product.name}</p>
+                        <p className="truncate text-xs uppercase tracking-[0.2em] text-white/40">{product.id}</p>
+                        <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.2em] text-white/50">
+                          <span>${product.price}</span>
+                          <span>{product.layout}</span>
+                          <span>#{product.position}</span>
+                          <span>{product.active ? 'actif' : 'cache'}</span>
                         </div>
                       </div>
 
-                      <div className="space-y-5">
-                        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                          <label className="space-y-2 xl:col-span-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Nom</span>
-                            <input
-                              name="name"
-                              defaultValue={product.name}
-                              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
-                            />
-                          </label>
-                          <label className="space-y-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Prix USD</span>
-                            <input
-                              name="price"
-                              type="number"
-                              min="0"
-                              step="1"
-                              defaultValue={product.price}
-                              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
-                            />
-                          </label>
-                          <label className="space-y-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Position</span>
-                            <input
-                              name="position"
-                              type="number"
-                              min="1"
-                              step="1"
-                              defaultValue={product.position}
-                              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
-                            />
-                          </label>
-                          <label className="space-y-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Layout</span>
-                            <select
-                              name="layout"
-                              defaultValue={product.layout}
-                              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
-                            >
-                              <option value="duo">Duo</option>
-                              <option value="solo">Solo</option>
-                            </select>
-                          </label>
-                          <label className="space-y-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Largeur</span>
-                            <input
-                              name="width"
-                              type="number"
-                              min="1"
-                              step="1"
-                              defaultValue={product.width}
-                              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
-                            />
-                          </label>
-                          <label className="space-y-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Hauteur</span>
-                            <input
-                              name="height"
-                              type="number"
-                              min="1"
-                              step="1"
-                              defaultValue={product.height}
-                              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
-                            />
-                          </label>
-                          <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-white/70 xl:self-end">
-                            <input type="checkbox" name="active" defaultChecked={product.active} className="h-4 w-4 accent-white" />
-                            Produit actif
-                          </label>
-                        </div>
-
-                        <div className="grid gap-4 md:grid-cols-[1fr_0.9fr]">
-                          <label className="space-y-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">URL image</span>
-                            <input
-                              name="image"
-                              defaultValue={product.image}
-                              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
-                            />
-                          </label>
-                          <label className="space-y-2">
-                            <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Remplacer l&apos;image</span>
-                            <input
-                              name="imageFile"
-                              type="file"
-                              accept="image/*"
-                              className="block w-full rounded-2xl border border-dashed border-white/15 bg-black px-4 py-3 text-sm text-white file:mr-4 file:rounded-full file:border-0 file:bg-white file:px-4 file:py-2 file:text-xs file:font-medium file:uppercase file:tracking-[0.2em] file:text-black"
-                            />
-                          </label>
-                        </div>
-
-                        <div className="flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                          <p className="text-xs text-white/45">Le code produit reste stable pour ne pas casser les commandes existantes.</p>
-                          <button
-                            type="submit"
-                            className="rounded-full bg-white px-5 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-black transition hover:bg-zinc-200"
-                          >
-                            Enregistrer
-                          </button>
-                        </div>
+                      <div className="rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-white/75 transition group-open:bg-white group-open:text-black">
+                        Modifier
                       </div>
+                    </summary>
+
+                    <div className="border-t border-white/10 px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+                      <form action={saveProductSettings} encType="multipart/form-data" className="space-y-5">
+                        <input type="hidden" name="productId" value={product.id} />
+
+                        <div className="grid gap-5 xl:grid-cols-[180px_1fr]">
+                          <div className="space-y-3">
+                            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04]">
+                              <Image
+                                src={product.image}
+                                alt={product.name}
+                                width={product.width}
+                                height={product.height}
+                                sizes="180px"
+                                className="aspect-[4/5] h-full w-full object-cover"
+                              />
+                            </div>
+                            <div className="rounded-[20px] border border-white/10 bg-white/[0.03] p-3 text-xs text-white/55">
+                              <p className="uppercase tracking-[0.22em] text-white/35">Code</p>
+                              <p className="mt-2 break-all font-medium text-white/80">{product.id}</p>
+                              <p className="mt-4 uppercase tracking-[0.22em] text-white/35">Dimensions</p>
+                              <p className="mt-2 text-white/80">
+                                {product.width} x {product.height}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-5">
+                            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                              <label className="space-y-2 xl:col-span-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Nom</span>
+                                <input
+                                  name="name"
+                                  defaultValue={product.name}
+                                  className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                                />
+                              </label>
+                              <label className="space-y-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Prix USD</span>
+                                <input
+                                  name="price"
+                                  type="number"
+                                  min="0"
+                                  step="1"
+                                  defaultValue={product.price}
+                                  className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                                />
+                              </label>
+                              <label className="space-y-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Position</span>
+                                <input
+                                  name="position"
+                                  type="number"
+                                  min="1"
+                                  step="1"
+                                  defaultValue={product.position}
+                                  className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                                />
+                              </label>
+                              <label className="space-y-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Layout</span>
+                                <select
+                                  name="layout"
+                                  defaultValue={product.layout}
+                                  className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                                >
+                                  <option value="duo">Duo</option>
+                                  <option value="solo">Solo</option>
+                                </select>
+                              </label>
+                              <label className="space-y-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Largeur</span>
+                                <input
+                                  name="width"
+                                  type="number"
+                                  min="1"
+                                  step="1"
+                                  defaultValue={product.width}
+                                  className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                                />
+                              </label>
+                              <label className="space-y-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Hauteur</span>
+                                <input
+                                  name="height"
+                                  type="number"
+                                  min="1"
+                                  step="1"
+                                  defaultValue={product.height}
+                                  className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                                />
+                              </label>
+                              <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-white/70 xl:self-end">
+                                <input type="checkbox" name="active" defaultChecked={product.active} className="h-4 w-4 accent-white" />
+                                Produit actif
+                              </label>
+                            </div>
+
+                            <div className="grid gap-4 md:grid-cols-[1fr_0.9fr]">
+                              <label className="space-y-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">URL image</span>
+                                <input
+                                  name="image"
+                                  defaultValue={product.image}
+                                  className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
+                                />
+                              </label>
+                              <label className="space-y-2">
+                                <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Remplacement image</span>
+                                <input
+                                  name="imageFile"
+                                  type="file"
+                                  accept="image/*"
+                                  className="block w-full rounded-2xl border border-dashed border-white/15 bg-black px-4 py-3 text-sm text-white file:mr-4 file:rounded-full file:border-0 file:bg-white file:px-4 file:py-2 file:text-xs file:font-medium file:uppercase file:tracking-[0.2em] file:text-black"
+                                />
+                              </label>
+                            </div>
+
+                            <div className="flex justify-end border-t border-white/10 pt-4">
+                              <button
+                                type="submit"
+                                className="rounded-full bg-white px-5 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-black transition hover:bg-zinc-200"
+                              >
+                                Enregistrer
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
                     </div>
-                  </form>
+                  </details>
                 ))}
               </div>
             </section>
@@ -411,16 +472,12 @@ export default async function AdminPage({
 
           <div className="space-y-6">
             <section className="rounded-[32px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Securite</p>
-                <h2 className="font-display text-2xl uppercase tracking-[0.08em]">Code admin</h2>
-                <p className="text-sm text-white/50">Le login admin repose sur un seul code. Change-le ici sans toucher au code source.</p>
-              </div>
+              <SectionHeader id="security" eyebrow="Securite" title="Code admin" note="Le code reste masque dans toute interface." />
 
-              <div className="mt-5 rounded-[24px] border border-white/10 bg-black/60 p-4 text-sm text-white/65">
+              <div className="mt-6 rounded-[24px] border border-white/10 bg-black/60 p-4 text-sm text-white/65">
                 <div className="flex items-center justify-between gap-3">
-                  <span>Etat</span>
-                  <strong className="text-white">{settings.adminCode ? 'Code personnalise' : 'Code par defaut actif'}</strong>
+                  <span>Acces</span>
+                  <strong className="text-white">Protege</strong>
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
                   <span>Derniere mise a jour</span>
@@ -435,17 +492,17 @@ export default async function AdminPage({
                     name="adminCode"
                     type="password"
                     inputMode="numeric"
-                    placeholder="4 a 12 chiffres"
+                    autoComplete="new-password"
                     className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                   />
                 </label>
                 <label className="space-y-2">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Confirmer le code</span>
+                  <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Confirmer</span>
                   <input
                     name="confirmAdminCode"
                     type="password"
                     inputMode="numeric"
-                    placeholder="Repete le code"
+                    autoComplete="new-password"
                     className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                   />
                 </label>
@@ -453,19 +510,13 @@ export default async function AdminPage({
                   type="submit"
                   className="w-full rounded-full bg-white px-5 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-black transition hover:bg-zinc-200"
                 >
-                  Mettre a jour le code
+                  Mettre a jour
                 </button>
               </form>
             </section>
 
             <section className="rounded-[32px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-white/35">Operations</p>
-                  <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.08em]">Commandes</h2>
-                </div>
-                <p className="text-xs text-white/45">Statuts, client, recap panier.</p>
-              </div>
+              <SectionHeader id="orders" eyebrow="Operations" title="Commandes" note="Chaque commande ouvre son propre panneau avec un bouton dedie." />
 
               {orders.length === 0 ? (
                 <div className="mt-6 rounded-[24px] border border-dashed border-white/10 bg-black/60 p-6 text-[11px] uppercase tracking-[0.24em] text-white/40">
@@ -474,21 +525,56 @@ export default async function AdminPage({
               ) : (
                 <div className="mt-6 space-y-4">
                   {orders.map((order) => (
-                    <article key={order.id} className="rounded-[28px] border border-white/10 bg-black/70 p-4 sm:p-5">
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <details key={order.id} className="group rounded-[28px] border border-white/10 bg-black/70 open:bg-white/[0.03]">
+                      <summary className="flex cursor-pointer list-none flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
                         <div className="space-y-2">
-                          <div className="flex flex-wrap items-center gap-3">
-                            <h3 className="font-display text-xl uppercase tracking-[0.08em]">{order.id}</h3>
-                            <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-white/55">
-                              {order.status}
-                            </span>
-                          </div>
+                          <p className="font-display text-xl uppercase tracking-[0.08em] text-white">{order.id}</p>
                           <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">
                             {new Date(order.createdAt).toLocaleString('fr-FR')} - {order.itemCount} article(s) - ${order.total}
                           </p>
                         </div>
 
-                        <form action={setOrderStatus} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-white/55">
+                            {order.status}
+                          </span>
+                          <span className="rounded-full border border-white/15 px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-white/75 transition group-open:bg-white group-open:text-black">
+                            Ouvrir
+                          </span>
+                        </div>
+                      </summary>
+
+                      <div className="border-t border-white/10 px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+                        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+                          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
+                            <p className="text-[10px] uppercase tracking-[0.26em] text-white/35">Client</p>
+                            <div className="mt-3 space-y-2 text-sm text-white/80">
+                              <p>{order.customer.country} ({order.customer.dialCode})</p>
+                              <p>{order.customer.phone}</p>
+                              <p>{order.customer.address}</p>
+                              <p>{order.customer.email || 'Sans email'}</p>
+                            </div>
+                          </div>
+
+                          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
+                            <p className="text-[10px] uppercase tracking-[0.26em] text-white/35">Panier</p>
+                            <div className="mt-3 space-y-3">
+                              {order.items.map((item) => (
+                                <div key={`${order.id}-${item.productId}-${item.size}`} className="flex items-start justify-between gap-3 text-sm text-white/80">
+                                  <div>
+                                    <p>{item.name}</p>
+                                    <p className="text-[11px] uppercase tracking-[0.2em] text-white/45">
+                                      {item.size} - {item.quantity}x
+                                    </p>
+                                  </div>
+                                  <span>${item.lineTotal}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <form action={setOrderStatus} className="mt-4 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-end">
                           <input type="hidden" name="orderId" value={order.id} />
                           <select
                             name="status"
@@ -504,40 +590,11 @@ export default async function AdminPage({
                             type="submit"
                             className="rounded-full bg-white px-4 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-black transition hover:bg-zinc-200"
                           >
-                            Enregistrer
+                            Mettre a jour
                           </button>
                         </form>
                       </div>
-
-                      <div className="mt-4 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-                        <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
-                          <p className="text-[10px] uppercase tracking-[0.26em] text-white/35">Client</p>
-                          <div className="mt-3 space-y-2 text-sm text-white/80">
-                            <p>{order.customer.country} ({order.customer.dialCode})</p>
-                            <p>{order.customer.phone}</p>
-                            <p>{order.customer.address}</p>
-                            <p>{order.customer.email || 'Sans email'}</p>
-                          </div>
-                        </div>
-
-                        <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
-                          <p className="text-[10px] uppercase tracking-[0.26em] text-white/35">Panier</p>
-                          <div className="mt-3 space-y-3">
-                            {order.items.map((item) => (
-                              <div key={`${order.id}-${item.productId}-${item.size}`} className="flex items-start justify-between gap-3 text-sm text-white/80">
-                                <div>
-                                  <p>{item.name}</p>
-                                  <p className="text-[11px] uppercase tracking-[0.2em] text-white/45">
-                                    {item.size} - {item.quantity}x
-                                  </p>
-                                </div>
-                                <span>${item.lineTotal}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </article>
+                    </details>
                   ))}
                 </div>
               )}
