@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --background: #05000a;
-  --surface: #0d0010;
-  --mauve-glow: rgba(80, 20, 100, 0.18);
+  --background: #000000;
+  --surface: #000000;
+  --mauve-glow: rgba(255, 255, 255, 0.045);
   --mauve-accent: rgba(190, 120, 230, 0.9);
   --mauve-accent-active: rgba(190, 120, 230, 0.88);
   --mauve-bright: rgba(210, 140, 255, 1);
@@ -78,7 +78,7 @@ header {
   justify-content: space-between;
   padding: 0 1.6rem;
   height: 52px;
-  background: linear-gradient(to bottom, rgba(5, 0, 10, 0.95), transparent);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent);
 }
 
 .logo {
@@ -121,15 +121,6 @@ header {
   margin-top: 52px;
   position: relative;
   z-index: 1;
-  animation: fadeIn 0.65s ease both;
-}
-
-@supports (content-visibility: auto) {
-  .feed > .row-solo,
-  .feed > .row-duo {
-    content-visibility: auto;
-    contain-intrinsic-size: 960px;
-  }
 }
 
 .row-solo {
@@ -143,48 +134,58 @@ header {
 
 .row-duo {
   display: flex;
+  align-items: flex-start;
 }
 
 .row-duo .item {
   width: 50%;
-  aspect-ratio: 1 / 1;
 }
 
 .item {
   position: relative;
   cursor: default;
   overflow: hidden;
-  background: var(--background);
+  background: transparent;
 }
 
 .product-image {
   width: 100%;
   height: auto;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
   transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
   filter: brightness(0.72) contrast(1.05) saturate(0.9);
 }
 
-.row-duo .product-image {
-  height: 100%;
+.item::after {
+  content: none;
 }
 
-.item::after {
+.row-duo .item::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, transparent 35%, rgba(30, 0, 45, 0.65) 100%);
+  top: 0;
+  bottom: 0;
+  width: clamp(26px, 4vw, 56px);
   pointer-events: none;
   z-index: 1;
-  mix-blend-mode: multiply;
+}
+
+.row-duo .item:first-child::before {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.row-duo .item:last-child::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
 .item:hover .product-image,
 .item.touched .product-image {
   transform: scale(1.05);
-  filter: brightness(0.38) contrast(1.1) saturate(0.7);
+  filter: brightness(0.42) contrast(1.08) saturate(0.82);
 }
 
 .price-badge {
@@ -206,7 +207,7 @@ header {
   font-size: 1rem;
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.96);
-  text-shadow: 0 0 18px rgba(210, 140, 255, 0.18);
+  text-shadow: 0 0 18px rgba(0, 0, 0, 0.32);
 }
 
 .overlay {
@@ -220,7 +221,7 @@ header {
   justify-content: flex-end;
   padding: 1.4rem 1.2rem 1.2rem;
   pointer-events: none;
-  background: linear-gradient(to top, rgba(10, 0, 18, 0.92) 0%, rgba(30, 5, 45, 0.3) 50%, transparent 70%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.26) 48%, transparent 72%);
 }
 
 .item:hover .overlay,
@@ -233,10 +234,10 @@ header {
   font-family: var(--font-bebas), sans-serif;
   font-size: clamp(1.1rem, 4vw, 1.7rem);
   letter-spacing: 0.12em;
-  color: var(--text-primary);
+  color: rgba(255, 255, 255, 0.96);
   line-height: 1;
   text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(160, 60, 200, 0.25);
+  text-shadow: 0 0 18px rgba(0, 0, 0, 0.36);
 }
 
 .ov-price {
@@ -268,7 +269,7 @@ header {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(140, 60, 180, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.3rem 0.55rem;
   background: transparent;
   transition: all 0.2s ease;
@@ -276,12 +277,13 @@ header {
 
 .size-opt:hover {
   color: rgba(255, 255, 255, 1);
-  border-color: rgba(160, 80, 200, 0.5);
+  border-color: rgba(255, 255, 255, 0.52);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .size-opt.selected {
-  color: #05000a;
-  background: rgba(190, 120, 230, 0.9);
+  color: #000000;
+  background: rgba(255, 255, 255, 0.96);
   border-color: transparent;
   text-shadow: none;
 }
@@ -292,9 +294,9 @@ header {
   font-size: 0.6rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: rgba(180, 120, 220, 0.3);
+  color: rgba(255, 255, 255, 0.34);
   background: transparent;
-  border: 1px solid rgba(140, 60, 180, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0.5rem 1rem;
   cursor: not-allowed;
   align-self: flex-start;
@@ -302,20 +304,20 @@ header {
 }
 
 .ov-btn.ready {
-  color: #05000a;
-  background: rgba(190, 120, 230, 0.88);
+  color: #000000;
+  background: rgba(255, 255, 255, 0.96);
   border-color: transparent;
   cursor: pointer;
 }
 
 .ov-btn.ready:hover {
-  background: rgba(210, 140, 255, 1);
-  box-shadow: 0 0 20px rgba(160, 60, 200, 0.4);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.12);
 }
 
 .ov-btn.added {
-  background: rgba(160, 80, 200, 0.5);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.96);
 }
 
 .checkout-shell {
@@ -700,15 +702,6 @@ footer span {
   text-transform: uppercase;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
 
 @media (max-width: 600px) {
   .row-solo,
