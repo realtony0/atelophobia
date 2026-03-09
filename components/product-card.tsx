@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import Image from 'next/image';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { SIZES, type ProductRecord, type ProductSize } from '@/lib/products';
 
@@ -14,7 +14,7 @@ type ProductCardProps = {
   onAddToBag: (product: ProductRecord, size: ProductSize) => void;
 };
 
-export function ProductCard({
+export const ProductCard = memo(function ProductCard({
   product,
   touched,
   added,
@@ -105,4 +105,4 @@ export function ProductCard({
       </div>
     </div>
   );
-}
+});

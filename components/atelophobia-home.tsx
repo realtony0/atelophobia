@@ -1,40 +1,19 @@
 'use client';
 
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
-import { type FormEvent, useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { COUNTRIES, DEFAULT_COUNTRY } from '@/lib/countries';
+import {
+  type CartItem,
+  type CheckoutFormState,
+  type OrderConfirmation
+} from '@/components/checkout-drawer';
 import { ProductCard } from '@/components/product-card';
 import { type OrderRecord, type ProductRecord, type ProductSize } from '@/lib/products';
 
-type CartItem = {
-  productId: string;
-  name: string;
-  image: string;
-  size: ProductSize;
-  quantity: number;
-  price: number;
-};
-
 type StorefrontProps = {
   products: ProductRecord[];
-};
-
-type CheckoutFormState = {
-  countryCode: string;
-  phoneNational: string;
-  address: string;
-  email: string;
-};
-
-type OrderConfirmation = {
-  id: string;
-  createdAt: string;
-  itemCount: number;
-  total: number;
-  country: string;
-  phone: string;
-  email: string | null;
 };
 
 type Row = {
@@ -43,18 +22,9 @@ type Row = {
 };
 
 const CART_STORAGE_KEY = 'atelophobia-cart';
-
-const drawerBackdropVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.25, ease: 'easeOut' } },
-  exit: { opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }
-};
-
-const drawerPanelVariants: Variants = {
-  hidden: { opacity: 0, x: 24 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.32, ease: 'easeOut' } },
-  exit: { opacity: 0, x: 24, transition: { duration: 0.22, ease: 'easeIn' } }
-};
+const LazyCheckoutDrawer = dynamic(() => import('@/components/checkout-drawer').then((mod) => mod.CheckoutDrawer), {
+  ssr: false
+});
 
 function buildRows(products: ProductRecord[]): Row[] {
   const sorted = [...products].sort((left, right) => left.position - right.position);
@@ -173,11 +143,11 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
     };
   }, []);
 
-  const handleActivate = (id: string) => {
+  const handleActivate = useCallback((id: string) => {
     setActiveProductId(id);
-  };
+  }, []);
 
-  const handleAddToBag = (product: ProductRecord, selectedSize: ProductSize) => {
+  const handleAddToBag = useCallback((product: ProductRecord, selectedSize: ProductSize) => {
     setActiveProductId(product.id);
 
     setCartItems((current) => {
@@ -211,9 +181,9 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
     window.setTimeout(() => {
       setAddedStates((current) => ({ ...current, [product.id]: false }));
     }, 1500);
-  };
+  }, []);
 
-  const updateItemQuantity = (productId: string, size: ProductSize, quantity: number) => {
+  const updateItemQuantity = useCallback((productId: string, size: ProductSize, quantity: number) => {
     setOrderConfirmation(null);
 
     if (quantity <= 0) {
@@ -226,7 +196,20 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
         item.productId === productId && item.size === size ? { ...item, quantity } : item
       )
     );
-  };
+  }, []);
+
+  const handleCheckoutFormChange = useCallback((field: keyof CheckoutFormState, value: string) => {
+    setCheckoutForm((current) => ({ ...current, [field]: value }));
+  }, []);
+
+  const clearConfirmation = useCallback(() => {
+    setOrderConfirmation(null);
+  }, []);
+
+  const closeCheckout = useCallback(() => {
+    setCheckoutOpen(false);
+    setOrderConfirmation(null);
+  }, []);
 
   const submitOrder = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -322,210 +305,25 @@ export function AtelophobiaHome({ products }: StorefrontProps) {
         <span>US — USD $</span>
       </footer>
 
-      <AnimatePresence>
-        {checkoutOpen ? (
-          <motion.div
-            className="checkout-shell"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={drawerBackdropVariants}
-          >
-            <button type="button" className="checkout-backdrop" onClick={() => setCheckoutOpen(false)} aria-label="Close checkout" />
-
-            <motion.aside className="checkout-panel" variants={drawerPanelVariants}>
-              <div className="checkout-topbar">
-                <div>
-                  <p className="checkout-kicker">{orderConfirmation ? 'Confirmation' : 'Commande'}</p>
-                  <h2 className="checkout-title">{orderConfirmation ? 'Commande recue' : 'Ton bag'}</h2>
-                </div>
-                <button
-                  type="button"
-                  className="checkout-close"
-                  onClick={() => {
-                    setCheckoutOpen(false);
-                    if (orderConfirmation) {
-                      setOrderConfirmation(null);
-                    }
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-
-              <div className="checkout-content">
-                {orderConfirmation ? (
-                  <section className="checkout-confirmation">
-                    <div className="checkout-confirmation-hero">
-                      <p className="checkout-confirmation-kicker">Commande validee</p>
-                      <h3 className="checkout-confirmation-title">Ta commande a bien ete recue.</h3>
-                      <p className="checkout-confirmation-copy">
-                        Merci. La commande est en attente de verification et l&apos;equipe peut te contacter rapidement
-                        pour la suite.
-                      </p>
-                    </div>
-
-                    <div className="checkout-confirmation-id">
-                      <span>Numero de commande</span>
-                      <strong>{orderConfirmation.id}</strong>
-                    </div>
-
-                    <div className="checkout-confirmation-grid">
-                      <div className="checkout-confirmation-card">
-                        <span>Articles</span>
-                        <strong>{orderConfirmation.itemCount}</strong>
-                      </div>
-                      <div className="checkout-confirmation-card">
-                        <span>Total</span>
-                        <strong>${orderConfirmation.total}</strong>
-                      </div>
-                    </div>
-
-                    <div className="checkout-confirmation-card checkout-confirmation-details">
-                      <span>Livraison</span>
-                      <strong>{orderConfirmation.country}</strong>
-                      <p>{orderConfirmation.phone}</p>
-                      {orderConfirmation.email ? <p>{orderConfirmation.email}</p> : <p>Mail non renseigne</p>}
-                      {confirmationDate ? <p>{confirmationDate}</p> : null}
-                    </div>
-
-                    <p className="checkout-confirmation-note">
-                      Garde ce numero. Il permet d&apos;identifier la commande si tu reviens vers la boutique.
-                    </p>
-
-                    <div className="checkout-confirmation-actions">
-                      <button
-                        type="button"
-                        className="checkout-secondary"
-                        onClick={() => {
-                          setOrderConfirmation(null);
-                          setCheckoutOpen(false);
-                        }}
-                      >
-                        Retour a la boutique
-                      </button>
-                    </div>
-                  </section>
-                ) : (
-                  <>
-                    <section className="checkout-section">
-                      <div className="checkout-section-head">
-                        <span>Articles</span>
-                        <span>{bagCount}</span>
-                      </div>
-
-                      {cartItems.length === 0 ? (
-                        <div className="checkout-empty">Le bag est vide.</div>
-                      ) : (
-                        <div className="checkout-items">
-                          {cartItems.map((item) => (
-                            <div key={`${item.productId}-${item.size}`} className="checkout-item">
-                              <div>
-                                <p className="checkout-item-name">{item.name}</p>
-                                <p className="checkout-item-meta">
-                                  {item.size} • ${item.price}
-                                </p>
-                              </div>
-                              <div className="checkout-item-side">
-                                <div className="checkout-qty">
-                                  <button
-                                    type="button"
-                                    onClick={() => updateItemQuantity(item.productId, item.size, item.quantity - 1)}
-                                  >
-                                    -
-                                  </button>
-                                  <span>{item.quantity}</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => updateItemQuantity(item.productId, item.size, item.quantity + 1)}
-                                  >
-                                    +
-                                  </button>
-                                </div>
-                                <strong>${item.quantity * item.price}</strong>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </section>
-
-                    <section className="checkout-section">
-                      <div className="checkout-section-head">
-                        <span>Infos client</span>
-                        <span>${totalAmount}</span>
-                      </div>
-
-                      <form className="checkout-form" onSubmit={submitOrder}>
-                        <label>
-                          <span>Pays</span>
-                          <select
-                            value={checkoutForm.countryCode}
-                            onChange={(event) =>
-                              setCheckoutForm((current) => ({ ...current, countryCode: event.target.value }))
-                            }
-                          >
-                            {COUNTRIES.map((country) => (
-                              <option key={country.code} value={country.code}>
-                                {country.name}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-
-                        <label>
-                          <span>Numero</span>
-                          <div className="phone-field">
-                            <div className="phone-code">{selectedCountry.dialCode}</div>
-                            <input
-                              value={checkoutForm.phoneNational}
-                              onChange={(event) =>
-                                setCheckoutForm((current) => ({ ...current, phoneNational: event.target.value }))
-                              }
-                              placeholder="77 000 00 00"
-                              inputMode="tel"
-                            />
-                          </div>
-                        </label>
-
-                        <label>
-                          <span>Adresse de livraison</span>
-                          <textarea
-                            value={checkoutForm.address}
-                            onChange={(event) =>
-                              setCheckoutForm((current) => ({ ...current, address: event.target.value }))
-                            }
-                            rows={4}
-                            placeholder="Ville, quartier, repere, rue, appartement..."
-                          />
-                        </label>
-
-                        <label>
-                          <span>Mail (optionnel)</span>
-                          <input
-                            type="email"
-                            value={checkoutForm.email}
-                            onChange={(event) =>
-                              setCheckoutForm((current) => ({ ...current, email: event.target.value }))
-                            }
-                            placeholder="toi@email.com"
-                          />
-                        </label>
-
-                        {checkoutError ? <p className="checkout-error">{checkoutError}</p> : null}
-
-                        <button type="submit" className="checkout-submit" disabled={isSubmitting || cartItems.length === 0}>
-                          {isSubmitting ? 'Envoi...' : 'Envoyer la commande'}
-                        </button>
-                      </form>
-                    </section>
-                  </>
-                )}
-              </div>
-            </motion.aside>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {checkoutOpen ? (
+        <LazyCheckoutDrawer
+          open={checkoutOpen}
+          bagCount={bagCount}
+          cartItems={cartItems}
+          checkoutForm={checkoutForm}
+          checkoutError={checkoutError}
+          confirmationDate={confirmationDate}
+          isSubmitting={isSubmitting}
+          orderConfirmation={orderConfirmation}
+          selectedCountry={selectedCountry}
+          totalAmount={totalAmount}
+          onCheckoutFormChange={handleCheckoutFormChange}
+          onClearConfirmation={clearConfirmation}
+          onClose={closeCheckout}
+          onSubmitOrder={submitOrder}
+          onUpdateItemQuantity={updateItemQuantity}
+        />
+      ) : null}
     </>
   );
 }

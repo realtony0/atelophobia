@@ -1,11 +1,9 @@
-import { unstable_noStore as noStore } from 'next/cache';
-
 import { AtelophobiaHome } from '@/components/atelophobia-home';
 import { getActiveProducts } from '@/lib/store';
 
-export default async function Page() {
-  noStore();
+export const revalidate = 3600;
 
+export default async function Page() {
   const products = await getActiveProducts();
 
   return <AtelophobiaHome products={products} />;
