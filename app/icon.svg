@@ -1,23 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <radialGradient id="glow" cx="50%" cy="38%" r="62%">
-      <stop offset="0%" stop-color="#c78cff" stop-opacity="0.55" />
-      <stop offset="55%" stop-color="#6b2da8" stop-opacity="0.24" />
-      <stop offset="100%" stop-color="#05000a" stop-opacity="0" />
-    </radialGradient>
-    <linearGradient id="bar" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="100%" stop-color="#ead8ff" />
+    <linearGradient id="accent" x1="18%" y1="14%" x2="82%" y2="86%">
+      <stop offset="0%" stop-color="#f7f1ff" />
+      <stop offset="100%" stop-color="#d8c0ff" />
+    </linearGradient>
+    <linearGradient id="mauve" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d08cff" />
+      <stop offset="100%" stop-color="#8e46d8" />
     </linearGradient>
   </defs>
 
-  <rect width="64" height="64" rx="14" fill="#05000a" />
-  <circle cx="32" cy="26" r="24" fill="url(#glow)" />
+  <rect width="64" height="64" rx="15" fill="#05000a" />
+  <rect x="2" y="2" width="60" height="60" rx="13" fill="none" stroke="#1e0b2a" stroke-width="1.5" />
+  <circle cx="32" cy="20" r="17" fill="#4d1972" opacity="0.16" />
 
   <path
-    d="M18 52 29.8 12h4.6L46 52h-6.7l-2.1-8.2H26.8L24.7 52Zm10.2-13.8h7.7L32 22.9Z"
-    fill="url(#bar)"
+    d="M16 50 28.8 14h6.4L48 50h-7.3l-2.4-7.6H25.7L23.3 50Zm11.7-13.5h8.6L32 22.5Z"
+    fill="url(#accent)"
   />
 
-  <rect x="24" y="47.5" width="16" height="2.5" rx="1.25" fill="#b974ff" opacity="0.9" />
+  <rect x="30.8" y="19" width="2.5" height="24" rx="1.25" fill="url(#mauve)" />
 </svg>
