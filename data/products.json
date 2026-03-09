@@ -8,7 +8,14 @@
     "height": 1168,
     "layout": "duo",
     "active": true,
-    "position": 1
+    "position": 1,
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
   },
   {
     "id": "mekao-pull-b",
@@ -19,7 +26,14 @@
     "height": 1024,
     "layout": "duo",
     "active": true,
-    "position": 3
+    "position": 3,
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
   },
   {
     "id": "mekao-pull-a",
@@ -30,7 +44,14 @@
     "height": 1120,
     "layout": "duo",
     "active": true,
-    "position": 4
+    "position": 4,
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
   },
   {
     "id": "phobias-jeans",
@@ -41,7 +62,14 @@
     "height": 1313,
     "layout": "duo",
     "active": true,
-    "position": 5
+    "position": 5,
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
   },
   {
     "id": "blackies-sleeve",
@@ -52,7 +80,14 @@
     "height": 1313,
     "layout": "duo",
     "active": true,
-    "position": 2
+    "position": 2,
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
   },
   {
     "id": "phobias-jeans-black",
@@ -63,6 +98,13 @@
     "height": 1313,
     "layout": "duo",
     "active": true,
-    "position": 6
+    "position": 6,
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
   }
 ]

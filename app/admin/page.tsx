@@ -10,6 +10,7 @@ import {
   updateAdminCode
 } from '@/app/admin/actions';
 import { requireAdminAuth } from '@/lib/admin-auth';
+import { SIZES, type ProductSize } from '@/lib/products';
 import { getOrders, getProducts, getSiteSettings } from '@/lib/store';
 
 function getSuccessMessage(searchParams?: Record<string, string | string[] | undefined>) {
@@ -42,6 +43,8 @@ function getErrorMessage(searchParams?: Record<string, string | string[] | undef
       return 'Verifie le code produit, le nom, le prix, la position et les dimensions.';
     case 'image':
       return 'Ajoute une image valide ou renseigne largeur et hauteur.';
+    case 'sizes':
+      return 'Selectionne au moins une taille pour le produit.';
     case 'upload':
       return "L'upload d'images n'est pas disponible sur cet environnement.";
     case 'order':
@@ -74,6 +77,29 @@ function SectionHeader({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <h2 className="font-display text-2xl uppercase tracking-[0.08em] sm:text-3xl">{title}</h2>
         {note ? <p className="text-xs text-white/45">{note}</p> : null}
+      </div>
+    </div>
+  );
+}
+
+function SizeSelector({
+  selectedSizes
+}: {
+  selectedSizes: ProductSize[];
+}) {
+  return (
+    <div className="space-y-2 xl:col-span-3">
+      <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">Tailles actives</span>
+      <div className="flex flex-wrap gap-2">
+        {SIZES.map((size) => (
+          <label
+            key={size}
+            className="flex items-center gap-2 rounded-full border border-white/10 bg-black px-3 py-2 text-[11px] uppercase tracking-[0.22em] text-white/70"
+          >
+            <input type="checkbox" name="sizes" value={size} defaultChecked={selectedSizes.includes(size)} className="h-4 w-4 accent-white" />
+            {size}
+          </label>
+        ))}
       </div>
     </div>
   );
@@ -262,6 +288,7 @@ export default async function AdminPage({
                       className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                     />
                   </label>
+                  <SizeSelector selectedSizes={SIZES} />
                   <label className="space-y-2 xl:col-span-3">
                     <span className="text-[10px] uppercase tracking-[0.26em] text-white/40">URL image</span>
                     <input
@@ -426,6 +453,7 @@ export default async function AdminPage({
                                   className="w-full rounded-2xl border border-white/10 bg-black px-4 py-3 text-sm text-white outline-none transition focus:border-white/30"
                                 />
                               </label>
+                              <SizeSelector selectedSizes={product.availableSizes} />
                               <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-white/70 xl:self-end">
                                 <input type="checkbox" name="active" defaultChecked={product.active} className="h-4 w-4 accent-white" />
                                 Produit actif

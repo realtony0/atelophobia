@@ -121,15 +121,6 @@ header {
   margin-top: 52px;
   position: relative;
   z-index: 1;
-  animation: fadeIn 0.65s ease both;
-}
-
-@supports (content-visibility: auto) {
-  .feed > .row-solo,
-  .feed > .row-duo {
-    content-visibility: auto;
-    contain-intrinsic-size: 960px;
-  }
 }
 
 .row-solo {
@@ -698,16 +689,6 @@ footer span {
   letter-spacing: 0.22em;
   color: rgba(160, 80, 200, 0.12);
   text-transform: uppercase;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
 }
 
 @media (max-width: 600px) {

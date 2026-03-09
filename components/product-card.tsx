@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { memo, useState } from 'react';
 
-import { SIZES, type ProductRecord, type ProductSize } from '@/lib/products';
+import { type ProductRecord, type ProductSize } from '@/lib/products';
 
 type ProductCardProps = {
   product: ProductRecord;
@@ -69,7 +69,7 @@ export const ProductCard = memo(function ProductCard({
         <div className="ov-price">${product.price}</div>
 
         <div className="ov-sizes">
-          {SIZES.map((size) => (
+          {product.availableSizes.map((size) => (
             <button
               key={size}
               type="button"
