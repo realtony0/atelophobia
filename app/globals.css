@@ -155,6 +155,7 @@ header {
 .item {
   --product-image-scale: 1;
   --product-image-scale-hover: 1.05;
+  --product-image-offset-y: 0%;
   position: relative;
   cursor: default;
   overflow: hidden;
@@ -170,6 +171,7 @@ header {
 .item[data-product-id='phobias-jeans'] {
   --product-image-scale: 0.89;
   --product-image-scale-hover: 0.94;
+  --product-image-offset-y: 1.35%;
 }
 
 .product-image {
@@ -178,7 +180,7 @@ header {
   object-fit: cover;
   object-position: center;
   display: block;
-  transform: scale(var(--product-image-scale));
+  transform: translate3d(0, var(--product-image-offset-y), 0) scale(var(--product-image-scale));
   transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
   filter: brightness(0.72) contrast(1.05) saturate(0.9);
 }
@@ -205,7 +207,7 @@ header {
 
 .item:hover .product-image,
 .item.touched .product-image {
-  transform: scale(var(--product-image-scale-hover));
+  transform: translate3d(0, var(--product-image-offset-y), 0) scale(var(--product-image-scale-hover));
   filter: brightness(0.38) contrast(1.1) saturate(0.7);
 }
 
