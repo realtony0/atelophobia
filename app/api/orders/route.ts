@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 
 import { COUNTRIES } from '@/lib/countries';
-import { isProductSize, type ProductSize } from '@/lib/products';
+import { SIZES } from '@/lib/products';
 import { createOrder } from '@/lib/store';
+
+const sizeSet = new Set(SIZES);
 
 export async function POST(request: Request) {
   try {
@@ -39,13 +41,13 @@ export async function POST(request: Request) {
     }
 
     const items = payload.items.map((item) => {
-      if (!item.productId || !item.size || !isProductSize(item.size)) {
+      if (!item.productId || !item.size || !sizeSet.has(item.size as (typeof SIZES)[number])) {
         throw new Error('Produit invalide.');
       }
 
       return {
         productId: item.productId,
-        size: item.size as ProductSize,
+        size: item.size as (typeof SIZES)[number],
         quantity: Number.isFinite(item.quantity) ? Math.max(1, Math.floor(item.quantity as number)) : 1
       };
     });

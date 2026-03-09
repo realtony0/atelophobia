@@ -4,8 +4,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { memo, useState } from 'react';
 
-import { getDisplayImageSrc } from '@/lib/product-images';
-import { type ProductRecord, type ProductSize } from '@/lib/products';
+import { SIZES, type ProductRecord, type ProductSize } from '@/lib/products';
 
 type ProductCardProps = {
   product: ProductRecord;
@@ -24,9 +23,7 @@ export const ProductCard = memo(function ProductCard({
 }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState<ProductSize | null>(null);
   const isReady = Boolean(selectedSize);
-  const imageSrc = getDisplayImageSrc(product.image);
-  const isRemoteImage = /^https?:\/\//i.test(imageSrc);
-  const usesTransparentLocalImage = imageSrc !== product.image;
+  const isRemoteImage = /^https?:\/\//i.test(product.image);
 
   const selectSize = (size: ProductSize) => {
     setSelectedSize(size);
@@ -55,14 +52,14 @@ export const ProductCard = memo(function ProductCard({
       }}
     >
       <Image
-        src={imageSrc}
+        src={product.image}
         alt={product.name}
         width={product.width}
         height={product.height}
         sizes={product.layout === 'solo' ? '(max-width: 600px) 100vw, 62vw' : '(max-width: 600px) 100vw, 50vw'}
         priority={product.position === 1}
         unoptimized={isRemoteImage}
-        className={clsx('product-image', usesTransparentLocalImage && 'product-image-cutout')}
+        className="product-image"
       />
 
       <div className="price-badge">${product.price}</div>
@@ -72,7 +69,7 @@ export const ProductCard = memo(function ProductCard({
         <div className="ov-price">${product.price}</div>
 
         <div className="ov-sizes">
-          {product.availableSizes.map((size) => (
+          {SIZES.map((size) => (
             <button
               key={size}
               type="button"

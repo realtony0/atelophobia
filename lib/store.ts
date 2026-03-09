@@ -9,8 +9,7 @@ import {
   type OrderRecord,
   type OrderStatus,
   type ProductRecord,
-  type ProductSize,
-  withDefaultProductSizes
+  type ProductSize
 } from '@/lib/products';
 
 const dataDir = path.join(process.cwd(), 'data');
@@ -41,15 +40,6 @@ type CreateOrderInput = {
     quantity: number;
   }>;
 };
-
-type StoredProductRecord = Omit<ProductRecord, 'availableSizes'> & {
-  availableSizes?: string[];
-};
-
-const normalizeProduct = (product: StoredProductRecord): ProductRecord => ({
-  ...product,
-  availableSizes: withDefaultProductSizes(product.availableSizes)
-});
 
 const sortProducts = (products: ProductRecord[]) =>
   [...products].sort((left, right) => {
@@ -145,20 +135,19 @@ async function listAllOrderBlobs() {
 }
 
 async function getProductsFromBlob() {
-  const existing = await readBlobJson<StoredProductRecord[]>(PRODUCTS_BLOB_PATH);
+  const existing = await readBlobJson<ProductRecord[]>(PRODUCTS_BLOB_PATH);
 
   if (existing) {
-    return sortProducts(existing.map(normalizeProduct));
+    return sortProducts(existing);
   }
 
-  const seed = await readJsonIfExists<StoredProductRecord[]>(productsFile, PRODUCT_SEED);
-  const normalizedSeed = sortProducts(seed.map(normalizeProduct));
-  await writeBlobJson(PRODUCTS_BLOB_PATH, normalizedSeed);
-  return normalizedSeed;
+  const seed = await readJsonIfExists<ProductRecord[]>(productsFile, PRODUCT_SEED);
+  await writeBlobJson(PRODUCTS_BLOB_PATH, sortProducts(seed));
+  return sortProducts(seed);
 }
 
 async function saveProductsToBlob(products: ProductRecord[]) {
-  await writeBlobJson(PRODUCTS_BLOB_PATH, sortProducts(products.map(normalizeProduct)));
+  await writeBlobJson(PRODUCTS_BLOB_PATH, sortProducts(products));
 }
 
 async function getOrdersFromBlob() {
@@ -242,8 +231,8 @@ export async function getProducts() {
     return getProductsFromBlob();
   }
 
-  const products = await readJson<StoredProductRecord[]>(productsFile, PRODUCT_SEED);
-  return sortProducts(products.map(normalizeProduct));
+  const products = await readJson<ProductRecord[]>(productsFile, PRODUCT_SEED);
+  return sortProducts(products);
 }
 
 export async function getActiveProducts() {
@@ -257,7 +246,7 @@ export async function saveProducts(products: ProductRecord[]) {
     return;
   }
 
-  await writeJson(productsFile, sortProducts(products.map(normalizeProduct)));
+  await writeJson(productsFile, sortProducts(products));
 }
 
 export async function getOrders() {
@@ -306,10 +295,6 @@ export async function createOrder(input: CreateOrderInput) {
 
     if (!product) {
       throw new Error(`Unknown product: ${item.productId}`);
-    }
-
-    if (!product.availableSizes.includes(item.size)) {
-      throw new Error('Taille indisponible.');
     }
 
     const quantity = Math.max(1, Math.floor(item.quantity));

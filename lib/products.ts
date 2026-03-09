@@ -10,7 +10,6 @@ export type ProductRecord = {
   width: number;
   height: number;
   layout: ProductLayout;
-  availableSizes: ProductSize[];
   active: boolean;
   position: number;
 };
@@ -47,19 +46,6 @@ export type OrderRecord = {
 
 export const SIZES: ProductSize[] = ['S', 'M', 'L', 'XL', 'XXL'];
 
-export function isProductSize(value: string): value is ProductSize {
-  return SIZES.includes(value as ProductSize);
-}
-
-export function sanitizeProductSizes(values: string[]) {
-  return SIZES.filter((size) => values.includes(size));
-}
-
-export function withDefaultProductSizes(values?: string[] | null) {
-  const sanitized = sanitizeProductSizes(values || []);
-  return sanitized.length > 0 ? sanitized : [...SIZES];
-}
-
 export const PRODUCT_SEED: ProductRecord[] = [
   {
     id: 'pinkao-sleeve',
@@ -69,7 +55,6 @@ export const PRODUCT_SEED: ProductRecord[] = [
     width: 880,
     height: 1168,
     layout: 'duo',
-    availableSizes: [...SIZES],
     active: true,
     position: 1
   },
@@ -81,7 +66,6 @@ export const PRODUCT_SEED: ProductRecord[] = [
     width: 1024,
     height: 1024,
     layout: 'duo',
-    availableSizes: [...SIZES],
     active: true,
     position: 3
   },
@@ -93,7 +77,6 @@ export const PRODUCT_SEED: ProductRecord[] = [
     width: 928,
     height: 1120,
     layout: 'duo',
-    availableSizes: [...SIZES],
     active: true,
     position: 4
   },
@@ -105,7 +88,6 @@ export const PRODUCT_SEED: ProductRecord[] = [
     width: 875,
     height: 1313,
     layout: 'duo',
-    availableSizes: [...SIZES],
     active: true,
     position: 5
   },
@@ -117,7 +99,6 @@ export const PRODUCT_SEED: ProductRecord[] = [
     width: 875,
     height: 1313,
     layout: 'duo',
-    availableSizes: [...SIZES],
     active: true,
     position: 2
   },
@@ -129,7 +110,6 @@ export const PRODUCT_SEED: ProductRecord[] = [
     width: 875,
     height: 1313,
     layout: 'duo',
-    availableSizes: [...SIZES],
     active: true,
     position: 6
   }

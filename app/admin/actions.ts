@@ -21,7 +21,7 @@ import {
   saveSiteSettings,
   updateOrderStatus
 } from '@/lib/store';
-import { SIZES, type OrderStatus, type ProductLayout, type ProductRecord } from '@/lib/products';
+import { type OrderStatus, type ProductLayout, type ProductRecord } from '@/lib/products';
 
 function slugifyProductId(value: string) {
   return value
@@ -56,11 +56,6 @@ function parsePrice(value: FormDataEntryValue | null) {
 
 function parseLayout(value: FormDataEntryValue | null): ProductLayout {
   return value === 'solo' ? 'solo' : 'duo';
-}
-
-function parseSelectedSizes(formData: FormData) {
-  const selected = new Set(formData.getAll('sizes').map((value) => String(value)));
-  return SIZES.filter((size) => selected.has(size));
 }
 
 function getSafeExtension(fileName: string) {
@@ -166,7 +161,6 @@ export async function saveProductSettings(formData: FormData) {
   const widthInput = parseInteger(formData.get('width'));
   const heightInput = parseInteger(formData.get('height'));
   const layout = parseLayout(formData.get('layout'));
-  const availableSizes = parseSelectedSizes(formData);
   const active = formData.get('active') === 'on';
 
   const products = await getProducts();
@@ -174,10 +168,6 @@ export async function saveProductSettings(formData: FormData) {
 
   if (!existingProduct || !productId || !name || price === null || position === null) {
     redirect('/admin?error=product');
-  }
-
-  if (availableSizes.length === 0) {
-    redirect('/admin?error=sizes');
   }
 
   const { image, width, height } = await resolveProductImage({
@@ -202,7 +192,6 @@ export async function saveProductSettings(formData: FormData) {
           price,
           position,
           layout,
-          availableSizes,
           active
         }
       : product
@@ -223,7 +212,6 @@ export async function createProduct(formData: FormData) {
   const widthInput = parseInteger(formData.get('width'));
   const heightInput = parseInteger(formData.get('height'));
   const layout = parseLayout(formData.get('layout'));
-  const availableSizes = parseSelectedSizes(formData);
   const active = formData.get('active') === 'on';
   const imageInput = String(formData.get('image') || '').trim();
   const imageFile = formData.get('imageFile') as File | null;
@@ -231,10 +219,6 @@ export async function createProduct(formData: FormData) {
 
   if (!productId || !name || price === null) {
     redirect('/admin?error=product');
-  }
-
-  if (availableSizes.length === 0) {
-    redirect('/admin?error=sizes');
   }
 
   if (products.some((product) => product.id === productId)) {
@@ -260,7 +244,6 @@ export async function createProduct(formData: FormData) {
       price,
       position,
       layout,
-      availableSizes,
       active
     }
   ];
