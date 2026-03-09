@@ -168,6 +168,10 @@ header {
   --product-image-scale-hover: 0.99;
 }
 
+.item[data-product-id='phobias-jeans-black'] {
+  --product-image-offset-y: 1.05%;
+}
+
 .item[data-product-id='phobias-jeans'] {
   --product-image-scale: 0.89;
   --product-image-scale-hover: 0.94;
